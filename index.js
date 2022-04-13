@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 const cors = require("cors");
 const Note = require("./models/note");
-const note = require("./models/note");
 app.use(cors());
 
 const requestLogger = (request, response, next) => {
