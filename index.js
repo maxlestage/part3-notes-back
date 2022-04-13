@@ -40,6 +40,13 @@ app.post("/api/notes", (request, response) => {
   });
 });
 
+// Affichage des notes :
+app.get("/api/notes", (request, response) => {
+  Note.find({}).then((notes) => {
+    response.json(notes);
+  });
+});
+
 // Affichage d'une note via son id :
 app.get("/api/notes/:id", (request, response, next) => {
   Note.findById(request.params.id)
