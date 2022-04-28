@@ -3,3 +3,4 @@ node_modules
 mongo.js
 mongoose.js
 tsconfig.json
+.DS_Store
