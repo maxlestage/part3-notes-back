@@ -5,16 +5,16 @@ const cors = require("cors");
 const Note = require("./models/note");
 app.use(cors());
 
-const requestLogger = (request, response, next) => {
-  console.log("Method:", request.method);
-  console.log("Path:  ", request.path);
-  console.log("Body:  ", request.body);
-  console.log("---");
-  next();
-};
+// const requestLogger = (request, response, next) => {
+//   console.log("Method:", request.method);
+//   console.log("Path:  ", request.path);
+//   console.log("Body:  ", request.body);
+//   console.log("---");
+//   next();
+// };
 
 app.use(express.json());
-app.use(requestLogger);
+// app.use(requestLogger);
 
 app.get("/", (req, res) => {
   res.send("<h1>Hello World!</h1><h2>Updated!</h2>");
@@ -84,11 +84,13 @@ app.delete("/api/notes/:id", (request, response, next) => {
     .catch((error) => next(error));
 });
 
+// Ne pointe pas vers une route existante :
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: "unknown endpoint" });
 };
 app.use(unknownEndpoint);
 
+// L'id demandé n'est pas repertorié dans la base de données :
 const errorHandler = (error, request, response, next) => {
   console.error(error.message);
 
