@@ -3,6 +3,7 @@ const app = express();
 require("dotenv").config();
 const cors = require("cors");
 const Note = require("./models/note");
+const errorHandler = require("./errorHandler");
 app.use(cors());
 
 // const requestLogger = (request, response, next) => {
@@ -41,12 +42,8 @@ app.get("/api/notes/:id", (request, response, next) => {
 });
 
 // Création d'une note via son id :
-app.post("/api/notes", (request, response) => {
+app.post("/api/notes", (request, response, next) => {
   const body = request.body;
-
-  if (body.content === undefined) {
-    return response.status(400).json({ error: "content missing" });
-  }
 
   const note = new Note({
     content: body.content,
@@ -54,14 +51,17 @@ app.post("/api/notes", (request, response) => {
     date: new Date(),
   });
 
-  note.save().then((savedNote) => {
-    response.json(savedNote);
-  });
+  note
+    .save()
+    .then((savedNote) => {
+      response.json(savedNote);
+    })
+    .catch((error) => next(error));
 });
 
 //Update d'une note via son id :
 app.put("/api/notes/:id", (request, response, next) => {
-  const body = request.body;
+  const { content, important } = request.body;
 
   const note = {
     content: body.content,
@@ -91,15 +91,6 @@ const unknownEndpoint = (request, response) => {
 app.use(unknownEndpoint);
 
 // L'id demandé n'est pas repertorié dans la base de données :
-const errorHandler = (error, request, response, next) => {
-  console.error(error.message);
-
-  if (error.name === "CastError") {
-    return response.status(400).send({ error: "malformatted id" });
-  }
-
-  next(error);
-};
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3001;
